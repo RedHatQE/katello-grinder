@@ -1,0 +1,12 @@
+http://dl.google.com/linux/chrome/rpm/stable/x86_64
+http://dl.google.com/linux/musicmanager/rpm/stable/x86_64
+http://dl.google.com/linux/talkplugin/rpm/stable/x86_64
+http://linuxdownload.adobe.com/linux/i386/
+http://download1.rpmfusion.org/free/fedora/releases/16/Everything/x86_64/os/
+http://download1.rpmfusion.org/free/fedora/updates/16/x86_64/
+http://download1.rpmfusion.org/free/fedora/releases/16/Everything/x86_64/debug/
+http://download1.rpmfusion.org/free/fedora/releases/16/Everything/source/SRPMS/
+http://download1.rpmfusion.org/free/fedora/updates/16/x86_64/debug/
+http://download1.rpmfusion.org/free/fedora/updates/16/SRPMS/
+http://download.virtualbox.org/virtualbox/rpm/fedora/16/x86_64
+http://download.virtualbox.org/virtualbox/rpm/fedora/16/i386
