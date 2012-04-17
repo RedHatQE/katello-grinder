@@ -1,0 +1,10 @@
+bin
+classes
+test-output
+testplugin/target
+*~
+\#*
+.gradle
+logs
+build
+cachedir
