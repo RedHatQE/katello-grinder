@@ -8,3 +8,6 @@ testplugin/target
 logs
 build
 cachedir
+.classpath
+.project
+.settings
