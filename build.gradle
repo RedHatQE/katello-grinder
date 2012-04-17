@@ -1,0 +1,63 @@
+apply plugin: 'eclipse'
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+allprojects {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+
+    compileGroovy.groovyOptions.fork = false
+    compileTestGroovy.groovyOptions.fork = false
+}
+
+
+eclipse {
+    project {
+        natures 'org.python.pydev.pythonNature'
+        buildCommand 'org.python.pydev.PyDevBuilder'
+    }
+}
+
+configurations {
+    grinder
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads'
+    }
+    maven {
+        url 'http://clojars.org/repo'
+    }
+    maven {
+        url 'http://download.java.net/maven/2/'
+    }
+    maven {
+        url 'http://repository.codehaus.org'
+    }
+    maven {
+        url 'http://snapshots.repository.codehaus.org'
+    }
+}
+
+dependencies {
+    compile('org.codehaus.groovy.modules.http-builder:http-builder:0.5.2') {
+        exclude group: 'org.codehouse.groovy', module: 'groovy'
+    }
+    grinder 'net.sf.grinder:grinder:3.8'
+    groovy 'org.codehaus.groovy:groovy:1.8.6'
+}
+
+task exec(dependsOn: 'classes', type: JavaExec) {
+    main = 'net.grinder.Grinder'
+    classpath = configurations.grinder + sourceSets.main.runtimeClasspath
+    systemProperties = System.properties
+    args "${project.projectDir}/src/main/grinder/grinder.properties"
+}
+
+task console(type: JavaExec) {
+    main = 'net.grinder.Console'
+    classpath = configurations.grinder + sourceSets.main.runtimeClasspath
+}
