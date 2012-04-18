@@ -11,3 +11,4 @@ cachedir
 .classpath
 .project
 .settings
+.pydevproject
