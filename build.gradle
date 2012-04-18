@@ -26,19 +26,13 @@ configurations {
 repositories {
     mavenCentral()
     maven {
-        url 'https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads'
+        url "${System.properties['user.home']}/.m2/repository"
     }
-    maven {
-        url 'http://clojars.org/repo'
-    }
-    maven {
-        url 'http://download.java.net/maven/2/'
-    }
-    maven {
-        url 'http://repository.codehaus.org'
-    }
-    maven {
-        url 'http://snapshots.repository.codehaus.org'
+    [ 'https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads', 'http://clojars.org/repo',
+      'http://download.java.net/maven/2/', 'http://repository.codehaus.org', 'http://snapshots.repository.codehaus.org' ].each { repo ->
+        maven {
+            url repo
+        }
     }
 }
 
@@ -46,7 +40,9 @@ dependencies {
     compile('org.codehaus.groovy.modules.http-builder:http-builder:0.5.2') {
         exclude group: 'org.codehouse.groovy', module: 'groovy'
     }
-    grinder 'net.sf.grinder:grinder:3.8'
+    grinder 'net.sf.grinder:grinder:3.8',
+            'com.redhat.qe:katello-api:1.0',
+            'org.testng:testng:6.5.1'
     groovy 'org.codehaus.groovy:groovy:1.8.6'
 }
 
