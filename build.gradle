@@ -21,13 +21,13 @@ eclipse {
 
 configurations {
     grinder
+    compile.exclude module: 'scannotation'
+    grinder.exclude module: 'scannotation'
 }
 
 repositories {
     mavenCentral()
-    maven {
-        url "${System.properties['user.home']}/.m2/repository"
-    }
+    mavenLocal()
     [ 'https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads', 'http://clojars.org/repo',
       'http://download.java.net/maven/2/', 'http://repository.codehaus.org', 'http://snapshots.repository.codehaus.org' ].each { repo ->
         maven {
@@ -37,23 +37,50 @@ repositories {
 }
 
 dependencies {
+    ext.jythonExclude = {
+        exclude group: 'org.python', module: 'jython'
+    }
+    ext.grinderDep = 'net.sf.grinder:grinder:3.10'
+    ext.katelloApiDep = 'com.redhat.qe:katello-api:2.0.3-SNAPSHOT'
+
     compile('org.codehaus.groovy.modules.http-builder:http-builder:0.5.2') {
         exclude group: 'org.codehouse.groovy', module: 'groovy'
     }
-    grinder 'net.sf.grinder:grinder:3.8',
-            'com.redhat.qe:katello-api:1.0',
-            'org.testng:testng:6.5.1'
-    groovy 'org.codehaus.groovy:groovy:1.8.6'
+    
+    compile(grinderDep, jythonExclude)
+    grinder(grinderDep, jythonExclude)
+
+    compile katelloApiDep
+    grinder 'org.testng:testng:6.7',
+            'org.python:jython-standalone:2.5.2',
+            'jyson:jyson:1.0.2',
+            katelloApiDep,
+            'net.oauth.core:oauth:20100527',
+            'com.google.inject:guice:3.0'
+    groovy 'org.codehaus.groovy:groovy:1.8.8'
 }
 
 task exec(dependsOn: 'classes', type: JavaExec) {
     main = 'net.grinder.Grinder'
     classpath = configurations.grinder + sourceSets.main.runtimeClasspath
     systemProperties = System.properties
+    systemProperties(['grinder.jvm.arguments': '-Djsse.enableSNIExtension=false -Dpython.home=/opt/jython/jython2.5.2'])
     args "${project.projectDir}/src/main/grinder/grinder.properties"
 }
 
 task console(type: JavaExec) {
     main = 'net.grinder.Console'
+    classpath = configurations.grinder + sourceSets.main.runtimeClasspath
+}
+
+task proxy(type: JavaExec) {
+    main = 'net.grinder.TCPProxy'
+    classpath = configurations.grinder + sourceSets.main.runtimeClasspath
+    args = [ "-http jython", "-console" ]
+}
+
+task jython(type: JavaExec) {
+    standardInput = System.in
+    main = 'org.python.util.jython'
     classpath = configurations.grinder + sourceSets.main.runtimeClasspath
 }
