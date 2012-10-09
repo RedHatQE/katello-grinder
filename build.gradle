@@ -70,6 +70,7 @@ task exec(dependsOn: 'classes', type: JavaExec) {
 
 task console(type: JavaExec) {
     main = 'net.grinder.Console'
+    systemProperties = System.properties
     classpath = configurations.grinder + sourceSets.main.runtimeClasspath
 }
 
