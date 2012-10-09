@@ -24,7 +24,12 @@ from com.google.inject import Key
 import random
 import os
 
-test1 = Test(1, "Subscription Manager registration")
+test1 = Test(1, "Get organization")
+test2 = Test(2, "Create consumer")
+test3 = Test(3, "Update packages")
+test4 = Test(4, "Subscribe consumer with product")
+test5 = Test(5, "Generic tasks")
+test6 = Test(6, "Generic tasks with cert")
 injector = Guice.createInjector(KatelloApiModule())
 uuids = []
 
@@ -37,8 +42,12 @@ class TestRunner:
     def __call__(self):        
         self.katelloTasks = injector.getInstance(Key.get(KatelloTasks,PlainSSLContext))
         self.katelloTasksWithCert = injector.getInstance(Key.get(KatelloTasks,CertSSLContext))
-        test1.record(self.katelloTasks)
-        test1.record(self.katelloTasksWithCert)
+        test1.record(self.katelloTasks.getOrganization)
+        test2.record(self.katelloTasks.createConsumer)
+        test3.record(self.katelloTasksWithCert.updatePackages)
+        test4.record(self.katelloTasksWithCert.subscribeConsumerWithProduct)
+        test5.record(self.katelloTasks)
+        test6.record(self.katelloTasksWithCert)
         self.registerSystem()
 
     def registerSystem(self):
