@@ -41,7 +41,7 @@ dependencies {
         exclude group: 'org.python', module: 'jython'
     }
     ext.grinderDep = 'net.sf.grinder:grinder:3.10'
-    ext.katelloApiDep = 'com.redhat.qe:katello-api:2.0.3-SNAPSHOT'
+    ext.katelloApiDep = 'com.redhat.qe:katello-api:2.0.4-SNAPSHOT'
 
     compile('org.codehaus.groovy.modules.http-builder:http-builder:0.5.2') {
         exclude group: 'org.codehouse.groovy', module: 'groovy'
@@ -83,5 +83,11 @@ task proxy(type: JavaExec) {
 task jython(type: JavaExec) {
     standardInput = System.in
     main = 'org.python.util.jython'
+    classpath = configurations.grinder + sourceSets.main.runtimeClasspath
+}
+
+task populate(type: JavaExec) {
+    main = 'com.redhat.qe.perf.katello.InitialSystems'
+    systemProperties = System.properties
     classpath = configurations.grinder + sourceSets.main.runtimeClasspath
 }

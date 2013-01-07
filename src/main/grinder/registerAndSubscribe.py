@@ -15,6 +15,7 @@ from com.xhaus.jyson import JysonCodec as json
 from com.redhat.qe.katello.tasks import KatelloTasks
 from com.redhat.qe.katello.common import KatelloUtils
 from com.redhat.qe.katello.ssl import KatelloPemThreadLocal
+from com.redhat.qe.katello.ssl import PEMx509KeyManager
 from com.redhat.qe.katello.guice import KatelloApiModule
 from com.redhat.qe.katello.guice import PlainSSLContext
 from com.redhat.qe.katello.guice import CertSSLContext
@@ -34,23 +35,10 @@ test6 = Test(6, "Generic tasks")
 test7 = Test(7, "Generic tasks with cert")
 injector = Guice.createInjector(KatelloApiModule())
 
-testOrganization = props['katello.test.organization']
-if testOrganization == None:
-    testOrganization = "ACME_Corporation"
-
-#initialSystems = int(props['katello.test.initialSystems'])
-#if initialSystems == None:
-    # Basically, if it isn't specified, we just want to run the thing
-initialSystems = 0
-    
-outerTasks = injector.getInstance(Key.get(KatelloTasks,PlainSSLContext))
-for i in range(initialSystems):
-    pid = KatelloUtils.getUniqueID()
-    consumer_name = "auto-"+pid+".example.com"
-    hostuuid = KatelloUtils.getUUID()
-    grinder.logger.info( "uuid: %s" % (hostuuid))
-    consumer = outerTasks.createConsumer(testOrganization, consumer_name, hostuuid)
-
+keyManager = injector.getInstance(PEMx509KeyManager)
+#test1.record(subscriptionManagerRequest)
+#test1.record(katelloTasks)
+#test1.record(katelloTasksWithCert)
 
 class TestRunner:
     def __init__(self):
@@ -76,12 +64,13 @@ class TestRunner:
         consumer = self.createConsumer(organization.cpKey)
         clientUuid = consumer.uuid
         KatelloPemThreadLocal.set(consumer.idCert.cert + consumer.idCert.key)
+#        keyManager.addPem(consumer.idCert.cert, consumer.idCert.key)
         self.uploadPackageList(consumer)
         self.consumeSubscription(consumer.uuid)
         KatelloPemThreadLocal.unset()
 
     def chooseAdmin(self):
-        organization = self.katelloTasks.getOrganization(testOrganization)
+        organization = self.katelloTasks.getOrganization("ACME_Corporation")
         grinder.logger.info( "organization selected: %s" % (organization.cpKey) )
         return organization
 

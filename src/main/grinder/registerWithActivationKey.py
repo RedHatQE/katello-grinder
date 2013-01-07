@@ -26,9 +26,7 @@ import os
 props = System.getProperties()
 
 test1 = Test(1, "Get organization")
-test2 = Test(2, "Create consumer")
-test3 = Test(3, "Update packages")
-test4 = Test(4, "Subscribe consumer with product")
+test2 = Test(2, "Create consumer with activation key")
 test5 = Test(5, "Delele consumer")
 test6 = Test(6, "Generic tasks")
 test7 = Test(7, "Generic tasks with cert")
@@ -38,20 +36,10 @@ testOrganization = props['katello.test.organization']
 if testOrganization == None:
     testOrganization = "ACME_Corporation"
 
-#initialSystems = int(props['katello.test.initialSystems'])
-#if initialSystems == None:
-    # Basically, if it isn't specified, we just want to run the thing
-initialSystems = 0
+testActivationKey = props['katello.test.activationkey']
+if testActivationKey == None:
+    testActivationKey = 'perf-activate'
     
-outerTasks = injector.getInstance(Key.get(KatelloTasks,PlainSSLContext))
-for i in range(initialSystems):
-    pid = KatelloUtils.getUniqueID()
-    consumer_name = "auto-"+pid+".example.com"
-    hostuuid = KatelloUtils.getUUID()
-    grinder.logger.info( "uuid: %s" % (hostuuid))
-    consumer = outerTasks.createConsumer(testOrganization, consumer_name, hostuuid)
-
-
 class TestRunner:
     def __init__(self):
         self.phase1CompleteBarrier = grinder.barrier("Phase 1")
@@ -61,9 +49,7 @@ class TestRunner:
         self.katelloTasks = injector.getInstance(Key.get(KatelloTasks,PlainSSLContext))
         self.katelloTasksWithCert = injector.getInstance(Key.get(KatelloTasks,CertSSLContext))
         test1.record(self.katelloTasks.getOrganization)
-        test2.record(self.katelloTasks.createConsumer)
-        test3.record(self.katelloTasksWithCert.updatePackages)
-        test4.record(self.katelloTasksWithCert.subscribeConsumerWithProduct)
+        test2.record(self.katelloTasks.registerSystemWithActivationKey)
         test5.record(self.katelloTasks.deleteConsumer)
         test6.record(self.katelloTasks)
         test7.record(self.katelloTasksWithCert)
@@ -73,12 +59,9 @@ class TestRunner:
 
     def registerSystem(self):
         organization = self.chooseAdmin()
-        consumer = self.createConsumer(organization.cpKey)
-        clientUuid = consumer.uuid
-        KatelloPemThreadLocal.set(consumer.idCert.cert + consumer.idCert.key)
-        self.uploadPackageList(consumer)
-        self.consumeSubscription(consumer.uuid)
-        KatelloPemThreadLocal.unset()
+        if organization.cpKey == None:
+            organization.cpKey = "ACME_Corporation"
+        consumer = self.createConsumer(organization)
 
     def chooseAdmin(self):
         organization = self.katelloTasks.getOrganization(testOrganization)
@@ -91,23 +74,10 @@ class TestRunner:
         consumer_name = "auto-"+pid+".example.com"
         hostuuid = KatelloUtils.getUUID()
         grinder.logger.info( "uuid: %s" % (hostuuid))
-        consumer = self.katelloTasks.createConsumer(organization, consumer_name, hostuuid)
+        consumer = self.katelloTasks.registerSystemWithActivationKey(testActivationKey, organization.cpKey, consumer_name, hostuuid, None)
         
-        # Get the certs from the response
-        clientUuid = consumer.uuid
-        clientCert = consumer.idCert.cert
-        clientKey = consumer.idCert.key
         self.uuids.append(clientUuid)
         return consumer
-
-    def uploadPackageList(self, consumer):
-        # Upload a package list
-        result = self.katelloTasksWithCert.updatePackages(consumer)
-        return result
-
-    def consumeSubscription(self, uuid):
-        entitlements = self.katelloTasksWithCert.subscribeConsumerWithProduct(uuid, [ "69" ])
-        return entitlements 
 
     def __del__(self):
         self.phase1CompleteBarrier.await()
