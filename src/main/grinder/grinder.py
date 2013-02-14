@@ -73,7 +73,7 @@ class TestRunner:
 
     def registerSystem(self):
         organization = self.chooseAdmin()
-        consumer = self.createConsumer(organization.cpKey)
+        consumer = self.createConsumer(organization.name)
         clientUuid = consumer.uuid
         KatelloPemThreadLocal.set(consumer.idCert.cert + consumer.idCert.key)
         self.uploadPackageList(consumer)
@@ -82,7 +82,7 @@ class TestRunner:
 
     def chooseAdmin(self):
         organization = self.katelloTasks.getOrganization(testOrganization)
-        grinder.logger.info( "organization selected: %s" % (organization.cpKey) )
+        grinder.logger.info( "organization selected: %s" % (organization.name) )
         return organization
 
     def createConsumer(self, organization):
