@@ -7,16 +7,20 @@ Scalability Testing Tool for Katello systems.
 ## Assumptions
 
 * You already have a system with either katello or headpin installed and configured
-* You have an automation.properties file configured to access said system
+* You have an **automation.properties** configured to access said system
 * You have a different system where you can call the katello API
  * It is also assumed that you have gradle installed
 * The default user who is used for the automation **must** have a default organization and environment set
 * The organization must have a valid Red Hat manifest file imported and repositories have been synced and promoted to a valid environment
 
 ## Configuration
-Copy *automation.properties.sample* and rename it to *automation.properties*:
+Copy *automation.properties.sample* to your $HOME directory and rename it to *automation.properties*:
 
   `$ cp automation.properties.sample automation.properties`
+
+Alternatively, you may tell grinder where your properties file is located:
+
+  `$ gradle -Dautomation.propertiesfile=<PATH_TO_PROPERTIES_FILE>`
 
 Open a separate console and start the gradle console:
 
@@ -49,4 +53,4 @@ As an example the following configuration would create a total of 128 new system
 ## Advanced uses
 You can pre-populate your environment with multiple clients prior to running a test (useful if you want to see how your system will behave already under a certain load) by running the following useful script:
 
-    gradle populate -Dkatello.test.initialSystems=100 -Dkatello.test.organization=ACME_Corporation
+    gradle populate -Dkatello.initialSystems=100 -Dkatello.organization=ACME_Corporation
