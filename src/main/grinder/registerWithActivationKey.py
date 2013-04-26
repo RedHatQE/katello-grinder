@@ -11,7 +11,6 @@ import java.io as javaio
 from org.python.core.util import StringUtil
 from HTTPClient import AuthorizationInfo, NVPair
 from net.grinder.plugin.http import HTTPPluginControl
-from com.xhaus.jyson import JysonCodec as json
 from com.redhat.qe.katello.tasks import KatelloTasks
 from com.redhat.qe.katello.common import KatelloUtils
 from com.redhat.qe.katello.ssl import KatelloPemThreadLocal
