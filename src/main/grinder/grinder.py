@@ -37,20 +37,6 @@ testOrganization = props['katello.test.organization']
 if testOrganization == None:
     testOrganization = "ACME_Corporation"
 
-#initialSystems = int(props['katello.test.initialSystems'])
-#if initialSystems == None:
-    # Basically, if it isn't specified, we just want to run the thing
-initialSystems = 0
-    
-outerTasks = injector.getInstance(Key.get(KatelloTasks,PlainSSLContext))
-for i in range(initialSystems):
-    pid = KatelloUtils.getUniqueID()
-    consumer_name = "auto-"+pid+".example.com"
-    hostuuid = KatelloUtils.getUUID()
-    grinder.logger.info( "uuid: %s" % (hostuuid))
-    consumer = outerTasks.createConsumer(testOrganization, consumer_name, hostuuid)
-
-
 class TestRunner:
     def __init__(self):
         self.phase1CompleteBarrier = grinder.barrier("Phase 1")
