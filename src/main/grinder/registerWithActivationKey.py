@@ -73,8 +73,11 @@ class TestRunner:
         consumer_name = "auto-"+pid+".example.com"
         hostuuid = KatelloUtils.getUUID()
         grinder.logger.info( "uuid: %s" % (hostuuid))
-        consumer = self.katelloTasks.registerSystemWithActivationKey(testActivationKey, organization.cpKey, consumer_name, hostuuid, None)
-        
+        consumer = self.katelloTasks.createConsumer(organization, consumer_name, hostuuid)
+
+        # Get the certs from the response
+        clientUuid = consumer.uuid
+                
         self.uuids.append(clientUuid)
         return consumer
 
@@ -89,4 +92,3 @@ def writeToFile(text):
     file = open(filename, "w")
     print >> file, text
     file.close()
-

@@ -27,13 +27,13 @@ props = System.getProperties()
 test1 = Test(1, "Get organization")
 test2 = Test(2, "Create consumer")
 test3 = Test(3, "Update packages")
-test4 = Test(4, "Subscribe consumer with product")
+test4 = Test(4, "Subscribe consumer")
 test5 = Test(5, "Delele consumer")
 test6 = Test(6, "Generic tasks")
 test7 = Test(7, "Generic tasks with cert")
 injector = Guice.createInjector(KatelloApiModule())
 
-testOrganization = props['katello.test.organization']
+testOrganization = props['katello.organization']
 if testOrganization == None:
     testOrganization = "ACME_Corporation"
 
@@ -48,7 +48,7 @@ class TestRunner:
         test1.record(self.katelloTasks.getOrganization)
         test2.record(self.katelloTasks.createConsumer)
         test3.record(self.katelloTasksWithCert.updatePackages)
-        test4.record(self.katelloTasksWithCert.subscribeConsumerWithProduct)
+        test4.record(self.katelloTasksWithCert.subscribeConsumer)
         test5.record(self.katelloTasks.deleteConsumer)
         test6.record(self.katelloTasks)
         test7.record(self.katelloTasksWithCert)
@@ -91,7 +91,7 @@ class TestRunner:
         return result
 
     def consumeSubscription(self, uuid):
-        entitlements = self.katelloTasksWithCert.subscribeConsumerWithProduct(uuid, [ "69" ])
+        entitlements = self.katelloTasksWithCert.subscribeConsumer(uuid )
         return entitlements 
 
     def __del__(self):

@@ -21,8 +21,8 @@ class InitialSystems {
         
     def createInitialSystems() {
         KatelloTasks tasks = injector.getInstance(Key.get(KatelloTasks.class, PlainSSLContext.class))
-        Integer systemCount = System.properties['katello.test.initialSystems'] as Integer
-        def testOrganization = System.properties['katello.test.organization'] as String ?: "ACME_Corporation"
+        Integer systemCount = System.properties['katello.initialSystems'] as Integer
+        String testOrganization = System.properties['katello.organization'] as String ?: "ACME_Corporation"
         systemCount.times {
             def pid = KatelloUtils.getUniqueID()
             def consumer_name = "auto-"+pid+".example.com"
@@ -31,7 +31,7 @@ class InitialSystems {
             KatelloPemThreadLocal.set(consumer.idCert.cert + consumer.idCert.key)            
             KatelloTasks tasksWithCert = injector.getInstance(Key.get(KatelloTasks.class, CertSSLContext.class))
             def result = tasksWithCert.updatePackages(consumer)
-            def entitlements = tasksWithCert.subscribeConsumerWithProduct(consumer.uuid, [ "69" ] as String[])
+            def entitlements = tasksWithCert.subscribeConsumer(consumer.uuid)
         }
     }
     
