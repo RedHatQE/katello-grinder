@@ -1,0 +1,18 @@
+# Katello settings
+katello.server.hostname=your.katello.server.fqdn
+
+# headpin|katello - used for CLI calls
+katello.engine=katello
+# sam|cfse|katello|headpin - used for API calls
+katello.product=katello
+
+# Admin username/password
+katello.admin.user=admin
+katello.admin.password=admin
+katello.server.port=443
+katello.api.user=admin
+katello.api.password=admin
+katello.server.protocol=https
+
+# default locale is: en_US
+katello.locale=en_US
