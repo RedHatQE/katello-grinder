@@ -12,3 +12,4 @@ cachedir
 .project
 .settings
 .pydevproject
+automation.properties
