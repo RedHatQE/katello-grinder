@@ -13,3 +13,4 @@ cachedir
 .settings
 .pydevproject
 automation.properties
+*file-store*
