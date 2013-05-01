@@ -80,8 +80,7 @@ class TestRunner:
         
         # Get the certs from the response
         clientUuid = consumer.uuid
-        clientCert = consumer.idCert.cert
-        clientKey = consumer.idCert.key
+
         self.uuids.append(clientUuid)
         return consumer
 
